@@ -42,17 +42,14 @@ public class MenuScreen extends Base2DScreen {
     public void render(float delta) {
         super.render(delta);
 //        if(i%10==0){
-//            System.out.println(mouse.x+" "+mouse.y);
-//            System.out.println(shipVectpr.x+" "+shipVectpr.y);
-//            System.out.println("_________________________");
-//            if(mouse.x-shipVectpr.x<1&&mouse.y-shipVectpr.y<1){
+        if (Math.abs(mouse.x - shipVectpr.x) < 3 && Math.abs(mouse.y - shipVectpr.y) < 3) {
+            shipVectpr = new Vector2(mouse.x, mouse.y);
+        }
         res = (mouse.cpy().sub(shipVectpr)).nor().scl(4);
         shipVectpr = shipVectpr.cpy().add(res);
-//            shipVectpr=new Vector2((int)shipVectpr.x,(int)shipVectpr.y);
 //        }
 
-        // System.out.println(xMid+"!!!!!!"+yMid);
-//        }
+        //        }
 //        i++;
 //        if (i>10000){i=i%10;}
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
