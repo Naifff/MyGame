@@ -20,21 +20,21 @@ public class MenuScreen extends Base2DScreen {
     private Texture ship;
     private int xMid;
     private int yMid;
-    private int x=0;
-    private int y=0;
-    private int i=0;
-private Vector2 centr;
-private Vector2 mouse;
-private Vector2 shipVectpr;
-private Vector2 res;
+    private int x = 0;
+    private int y = 0;
+    private int i = 0;
+    private Vector2 centr;
+    private Vector2 mouse;
+    private Vector2 shipVectpr;
+    private Vector2 res;
 
     @Override
     public void show() {
         super.show();
 //        Gdx.graphics.setResizable(false);
         Gdx.graphics.setTitle("Go Go Go");
-        batch =new SpriteBatch();
-        background=new Texture("1.png");
+        batch = new SpriteBatch();
+        background = new Texture("1.png");
         ship = new Texture("2.png");
     }
 
@@ -46,12 +46,12 @@ private Vector2 res;
 //            System.out.println(shipVectpr.x+" "+shipVectpr.y);
 //            System.out.println("_________________________");
 //            if(mouse.x-shipVectpr.x<1&&mouse.y-shipVectpr.y<1){
-            res=(mouse.cpy().sub(shipVectpr)).nor().scl(4);
-            shipVectpr=shipVectpr.cpy().add(res);
+        res = (mouse.cpy().sub(shipVectpr)).nor().scl(4);
+        shipVectpr = shipVectpr.cpy().add(res);
 //            shipVectpr=new Vector2((int)shipVectpr.x,(int)shipVectpr.y);
 //        }
 
-           // System.out.println(xMid+"!!!!!!"+yMid);
+        // System.out.println(xMid+"!!!!!!"+yMid);
 //        }
 //        i++;
 //        if (i>10000){i=i%10;}
@@ -74,25 +74,25 @@ private Vector2 res;
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        x=screenX-ship.getWidth()/2;
-        y=(Gdx.graphics.getHeight()-screenY)-ship.getHeight()/2;
-        mouse=new Vector2(x,y);
+        x = screenX - ship.getWidth() / 2;
+        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+        mouse = new Vector2(x, y);
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        x=screenX-ship.getWidth()/2;
-        y=(Gdx.graphics.getHeight()-screenY)-ship.getHeight()/2;
-        mouse=new Vector2(xMid,yMid);
+        x = screenX - ship.getWidth() / 2;
+        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+        mouse = new Vector2(xMid, yMid);
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        x=screenX-ship.getWidth()/2;
-        y=(Gdx.graphics.getHeight()-screenY)-ship.getHeight()/2;
-        mouse=new Vector2(x,y);
+        x = screenX - ship.getWidth() / 2;
+        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+        mouse = new Vector2(x, y);
         return super.touchDragged(screenX, screenY, pointer);
     }
 
@@ -100,14 +100,14 @@ private Vector2 res;
     public void resize(int width, int height) {
 
 //        System.out.println( Gdx.graphics.getBackBufferWidth());
-        xMid=width/2-ship.getWidth()/2;
-        x=xMid;
+        xMid = width / 2 - ship.getWidth() / 2;
+        x = xMid;
 
-        yMid=height/2-ship.getHeight()/2;
-        y=yMid;
-centr = new Vector2(x,y);
-shipVectpr = new Vector2(x,y);
-mouse =new Vector2(x,y);
+        yMid = height / 2 - ship.getHeight() / 2;
+        y = yMid;
+        centr = new Vector2(x, y);
+        shipVectpr = new Vector2(x, y);
+        mouse = new Vector2(x, y);
 //        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
 //        System.out.println(width+"_windiw_"+height);
 //        System.out.println(xMid+"_center_"+yMid);
@@ -116,7 +116,7 @@ mouse =new Vector2(x,y);
 }
 
 /*
-		Vector2 v1 = new Vector2(1, 3);
+        Vector2 v1 = new Vector2(1, 3);
 		Vector2 v2 = new Vector2(0, -1);
 		// v1(x1, y1) + v2(x2, y2) = v3(x1 + x2, y1 + y2)
 		Vector2 v3 = v1.cpy().add(v2);
