@@ -15,7 +15,7 @@ public class Base2DScreen implements Screen{
 
     @Override
     public void resize(int width, int height) {
-        System.out.println("resize");
+        System.out.println("resize width="+width+" height="+height);
     }
 
     @Override
