@@ -2,7 +2,6 @@ package ru.geekbrains.mygame;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,10 +25,10 @@ public class MenuScreen extends Base2DScreen {
     private int move = 5;
     private Vector2 centr;
     private Vector2 mouse;
-    private Vector2 shipVectpr;
+    private Vector2 shipVector;
     private Vector2 res;
     private Vector2 levo = new Vector2(-1, 0);
-    private int speed =3;
+    private int speed = 180;
 
 
     @Override
@@ -45,23 +44,23 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-update();
-
+        float dt=Gdx.graphics.getDeltaTime();
+        update(dt);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(background, 0, 0);
 //		batch.setColor(0.11f,0.154f,0.241f,1);
-        batch.draw(ship, shipVectpr.x, shipVectpr.y);
+        batch.draw(ship, shipVector.x, shipVector.y);
 //		batch.draw(region, 100, 100);
         batch.end();
     }
 
-    public void update(){
-        if (Math.abs(mouse.x - shipVectpr.x) < 3 && Math.abs(mouse.y - shipVectpr.y) < 3) {
-            shipVectpr = new Vector2(mouse.x, mouse.y);
+    public void update(float dt) {
+        if (Math.abs(mouse.x - shipVector.x) < 3 && Math.abs(mouse.y - shipVector.y) < 3) {
+            shipVector = new Vector2(mouse.x, mouse.y);
         }
-        res = (mouse.cpy().sub(shipVectpr)).nor().scl(speed);
-        shipVectpr = shipVectpr.cpy().add(res);
+        res = (mouse.cpy().sub(shipVector)).nor().scl(speed*dt);
+        shipVector = shipVector.cpy().add(res);
         if (i % 10 == 0) {
             if (res.x * levo.x + res.y * levo.y > 0) {
                 move--;
@@ -74,12 +73,14 @@ update();
                     move = 9;
                 }
             } else {
-                if (move>5){move--;}
-                if (move<5){move++;}
+                if (move > 5) {
+                    move--;
+                }
+                if (move < 5) {
+                    move++;
+                }
             }
             ship = moveShip(move);
-
-
         }
         i++;
         if (i > 10000) {
@@ -126,7 +127,11 @@ update();
         x = screenX - ship.getWidth() / 2;
         y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
         mouse = new Vector2(x, y);
-        if (button==0){speed=4;}else {speed=8;}
+        if (button == 0) {
+            speed = 240;
+        } else {
+            speed = 480;
+        }
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -135,7 +140,7 @@ update();
         x = screenX - ship.getWidth() / 2;
         y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
         mouse = new Vector2(xMid, yMid);
-        speed =3;
+        speed = 180;
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
@@ -158,7 +163,7 @@ update();
         yMid = height / 2 - ship.getHeight() / 2;
         y = yMid;
         centr = new Vector2(x, y);
-        shipVectpr = new Vector2(x, y);
+        shipVector = new Vector2(x, y);
         mouse = new Vector2(x, y);
 
 //        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
