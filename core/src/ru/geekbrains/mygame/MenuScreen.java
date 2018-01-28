@@ -29,6 +29,8 @@ public class MenuScreen extends Base2DScreen {
     private Vector2 shipVectpr;
     private Vector2 res;
     private Vector2 levo = new Vector2(-1, 0);
+    private int speed =3;
+
 
     @Override
     public void show() {
@@ -47,7 +49,7 @@ public class MenuScreen extends Base2DScreen {
         if (Math.abs(mouse.x - shipVectpr.x) < 3 && Math.abs(mouse.y - shipVectpr.y) < 3) {
             shipVectpr = new Vector2(mouse.x, mouse.y);
         }
-        res = (mouse.cpy().sub(shipVectpr)).nor().scl(4);
+        res = (mouse.cpy().sub(shipVectpr)).nor().scl(speed);
         shipVectpr = shipVectpr.cpy().add(res);
         if (i % 10 == 0) {
             if (res.x * levo.x + res.y * levo.y > 0) {
@@ -119,6 +121,7 @@ public class MenuScreen extends Base2DScreen {
         x = screenX - ship.getWidth() / 2;
         y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
         mouse = new Vector2(x, y);
+        if (button==0){speed=4;}else {speed=8;}
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -127,6 +130,7 @@ public class MenuScreen extends Base2DScreen {
         x = screenX - ship.getWidth() / 2;
         y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
         mouse = new Vector2(xMid, yMid);
+        speed =3;
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
