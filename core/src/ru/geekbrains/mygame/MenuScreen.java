@@ -35,7 +35,7 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void show() {
         super.show();
-//        Gdx.graphics.setResizable(false);
+        Gdx.graphics.setResizable(false);
         Gdx.graphics.setTitle("Go Go Go");
         batch = new SpriteBatch();
         background = new Texture("1.png");
@@ -45,7 +45,18 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+update();
 
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(background, 0, 0);
+//		batch.setColor(0.11f,0.154f,0.241f,1);
+        batch.draw(ship, shipVectpr.x, shipVectpr.y);
+//		batch.draw(region, 100, 100);
+        batch.end();
+    }
+
+    public void update(){
         if (Math.abs(mouse.x - shipVectpr.x) < 3 && Math.abs(mouse.y - shipVectpr.y) < 3) {
             shipVectpr = new Vector2(mouse.x, mouse.y);
         }
@@ -74,13 +85,7 @@ public class MenuScreen extends Base2DScreen {
         if (i > 10000) {
             i = i % 10;
         }
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(background, 0, 0);
-//		batch.setColor(0.11f,0.154f,0.241f,1);
-        batch.draw(ship, shipVectpr.x, shipVectpr.y);
-//		batch.draw(region, 100, 100);
-        batch.end();
+
     }
 
     public Texture moveShip(int m) {
