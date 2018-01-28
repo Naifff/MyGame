@@ -23,10 +23,12 @@ public class MenuScreen extends Base2DScreen {
     private int x = 0;
     private int y = 0;
     private int i = 0;
+    private int move = 5;
     private Vector2 centr;
     private Vector2 mouse;
     private Vector2 shipVectpr;
     private Vector2 res;
+    private Vector2 levo = new Vector2(-1, 0);
 
     @Override
     public void show() {
@@ -35,23 +37,41 @@ public class MenuScreen extends Base2DScreen {
         Gdx.graphics.setTitle("Go Go Go");
         batch = new SpriteBatch();
         background = new Texture("1.png");
-        ship = new Texture("2.png");
+        //ship = new Texture("2.png");
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-//        if(i%10==0){
+
         if (Math.abs(mouse.x - shipVectpr.x) < 3 && Math.abs(mouse.y - shipVectpr.y) < 3) {
             shipVectpr = new Vector2(mouse.x, mouse.y);
         }
         res = (mouse.cpy().sub(shipVectpr)).nor().scl(4);
         shipVectpr = shipVectpr.cpy().add(res);
-//        }
+        if (i % 10 == 0) {
+            if (res.x * levo.x + res.y * levo.y > 0) {
+                move--;
+                if (move < 1) {
+                    move = 1;
+                }
+            } else if (res.x * levo.x + res.y * levo.y < 0) {
+                move++;
+                if (move > 9) {
+                    move = 9;
+                }
+            } else {
+                if (move>5){move--;}
+                if (move<5){move++;}
+            }
+            ship = moveShip(move);
 
-        //        }
-//        i++;
-//        if (i>10000){i=i%10;}
+
+        }
+        i++;
+        if (i > 10000) {
+            i = i % 10;
+        }
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(background, 0, 0);
@@ -59,6 +79,31 @@ public class MenuScreen extends Base2DScreen {
         batch.draw(ship, shipVectpr.x, shipVectpr.y);
 //		batch.draw(region, 100, 100);
         batch.end();
+    }
+
+    public Texture moveShip(int m) {
+        switch (m) {
+            case 1:
+                return new Texture("sh1.png");
+            case 2:
+                return new Texture("sh2.png");
+            case 3:
+                return new Texture("sh3.png");
+            case 4:
+                return new Texture("sh4.png");
+            case 6:
+                return new Texture("sh6.png");
+            case 7:
+                return new Texture("sh7.png");
+            case 8:
+                return new Texture("sh8.png");
+            case 9:
+                return new Texture("sh9.png");
+            default:
+                return new Texture("sh5.png");
+
+        }
+
     }
 
     @Override
@@ -97,6 +142,7 @@ public class MenuScreen extends Base2DScreen {
     public void resize(int width, int height) {
 
 //        System.out.println( Gdx.graphics.getBackBufferWidth());
+        ship = new Texture("sh5.png");
         xMid = width / 2 - ship.getWidth() / 2;
         x = xMid;
 
@@ -105,6 +151,7 @@ public class MenuScreen extends Base2DScreen {
         centr = new Vector2(x, y);
         shipVectpr = new Vector2(x, y);
         mouse = new Vector2(x, y);
+
 //        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
 //        System.out.println(width+"_windiw_"+height);
 //        System.out.println(xMid+"_center_"+yMid);
