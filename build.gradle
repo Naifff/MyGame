@@ -44,6 +44,7 @@ project(":desktop") {
 
     dependencies {
         compile project(":core")
+//        compile project(":engine")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         
@@ -114,6 +115,7 @@ project(":engine") {
     sourceSets.main.java.srcDirs = [ "src/" ]
 
     dependencies {
+//        compile project(":core")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 
     }

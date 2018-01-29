@@ -10,17 +10,21 @@ import com.badlogic.gdx.math.Vector2;
 import ru.geekbrains.mygame.engine.Base2DScreen;
 
 public class MenuScreen extends Base2DScreen {
-    public MenuScreen(Game game) {
-        super(game);
+    public MenuScreen(My2DGame game, SpriteBatch batch) {
+        super(game, batch);
+        this.game = game;
     }
 
-    private SpriteBatch batch;
+    // private SpriteBatch batch;
+    private My2DGame game;
     private Texture background;
     private Texture ship;
-    private int xMid;
-    private int yMid;
-    private int x = 0;
-    private int y = 0;
+    //при изменении разрешения экрана и текстуры корабля, пересчитать!!!
+    private int xMid = 595;
+    private int yMid = 310;
+    //при изменении разрешения экрана и текстуры корабля, пересчитать!!!
+    private int x = xMid;
+    private int y = yMid;
     private int i = 0;
     private int move = 5;
     private Vector2 centr;
@@ -29,6 +33,8 @@ public class MenuScreen extends Base2DScreen {
     private Vector2 res;
     private Vector2 levo = new Vector2(-1, 0);
     private int speed = 180;
+//    private float xDif;
+//    private  float yDif;
 
 
     @Override
@@ -36,16 +42,17 @@ public class MenuScreen extends Base2DScreen {
         super.show();
         Gdx.graphics.setResizable(false);
         Gdx.graphics.setTitle("Go Go Go");
-        batch = new SpriteBatch();
+        //  batch = new SpriteBatch();
         background = new Texture("1.png");
         //ship = new Texture("2.png");
+        shipVector = new Vector2(x, y);
     }
 
     @Override
-    public void render(float delta) {
-        super.render(delta);
-        float dt=Gdx.graphics.getDeltaTime();
+    public void render(float dt) {
+        super.render(dt);
         update(dt);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(background, 0, 0);
@@ -59,7 +66,7 @@ public class MenuScreen extends Base2DScreen {
         if (Math.abs(mouse.x - shipVector.x) < 3 && Math.abs(mouse.y - shipVector.y) < 3) {
             shipVector = new Vector2(mouse.x, mouse.y);
         }
-        res = (mouse.cpy().sub(shipVector)).nor().scl(speed*dt);
+        res = (mouse.cpy().sub(shipVector)).nor().scl(speed * dt);
         shipVector = shipVector.cpy().add(res);
         if (i % 10 == 0) {
             if (res.x * levo.x + res.y * levo.y > 0) {
@@ -116,10 +123,11 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void dispose() {
-        batch.dispose();
+
+//        batch.dispose();
         background.dispose();
         ship.dispose();
-        super.dispose();
+//        super.dispose();
     }
 
     @Override
@@ -154,17 +162,29 @@ public class MenuScreen extends Base2DScreen {
 
     @Override
     public void resize(int width, int height) {
+        this.game.getViewport().update(width, height, true);
+        this.game.getViewport().apply();
 
 //        System.out.println( Gdx.graphics.getBackBufferWidth());
         ship = new Texture("sh5.png");
-        xMid = width / 2 - ship.getWidth() / 2;
-        x = xMid;
+//        xMid = width / 2 - ship.getWidth() / 2;
+//        x = xMid;
 
-        yMid = height / 2 - ship.getHeight() / 2;
-        y = yMid;
+//        yMid = height / 2 - ship.getHeight() / 2;
+//        y = yMid;
         centr = new Vector2(x, y);
-        shipVector = new Vector2(x, y);
-        mouse = new Vector2(x, y);
+//        shipVector = new Vector2(x, y);
+        mouse = new Vector2(xMid, yMid);
+
+//        xDif=width/1280;
+//        yDif=height/720;
+
+//        x = screenX - ship.getWidth() / 2;
+//        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+//        mouse = new Vector2(xMid, yMid);
+//        speed = 180;
+
+//        System.out.println(xMid+"_+_"+yMid);
 
 //        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
 //        System.out.println(width+"_windiw_"+height);

@@ -4,13 +4,19 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Base2DScreen implements Screen, InputProcessor{
+import ru.geekbrains.mygame.*;
+
+
+public class Base2DScreen implements Screen, InputProcessor {
 
     protected Game game;
+    protected SpriteBatch batch;
 
-    public Base2DScreen(Game game) {
+    public Base2DScreen(Game game, SpriteBatch batch) {
         this.game = game;
+        this.batch = batch;
     }
 
     @Override
@@ -26,7 +32,7 @@ public class Base2DScreen implements Screen, InputProcessor{
 
     @Override
     public void resize(int width, int height) {
-        System.out.println("resize width="+width+" height="+height);
+        System.out.println("resize width=" + width + " height=" + height);
     }
 
     @Override
@@ -46,42 +52,44 @@ public class Base2DScreen implements Screen, InputProcessor{
 
     @Override
     public void dispose() {
+//        batch.dispose();
+        game.dispose();
         System.out.println("dispose");
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("keyDown="+keycode);
+        System.out.println("keyDown=" + keycode);
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println("keyUp="+keycode);
+        System.out.println("keyUp=" + keycode);
         return false;
     }
 
     @Override
     public boolean keyTyped(char character) {
-        System.out.println("keyTyped="+character);
+        System.out.println("keyTyped=" + character);
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown X="+screenX+" Y="+(Gdx.graphics.getHeight()-screenY)+" button="+button);
+        System.out.println("touchDown X=" + screenX + " Y=" + (Gdx.graphics.getHeight() - screenY) + " button=" + button);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchUp X="+screenX+" Y="+screenY+" button="+button);
+        System.out.println("touchUp X=" + screenX + " Y=" + screenY + " button=" + button);
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        System.out.println("touchDragged X="+screenX+" Y="+screenY);
+        System.out.println("touchDragged X=" + screenX + " Y=" + screenY);
         return false;
     }
 
