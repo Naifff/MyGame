@@ -5,9 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.mygame.engine.Base2DScreen;
+import ru.geekbrains.mygame.engine.Rect;
 
 public class MenuScreen extends Base2DScreen {
     public MenuScreen(My2DGame game, SpriteBatch batch) {
@@ -33,6 +35,8 @@ public class MenuScreen extends Base2DScreen {
     private Vector2 res;
     private Vector2 levo = new Vector2(-1, 0);
     private int speed = 180;
+    private Vector2 testMatrixVector;
+    private Matrix3 matrix3;
 //    private float xDif;
 //    private  float yDif;
 
@@ -46,6 +50,10 @@ public class MenuScreen extends Base2DScreen {
         background = new Texture("1.png");
         //ship = new Texture("2.png");
         shipVector = new Vector2(x, y);
+        testMatrixVector=new Vector2(2,3);
+        matrix3=new Matrix3();
+        matrix3.idt();
+        testMatrixVector.mul(matrix3);
     }
 
     @Override
