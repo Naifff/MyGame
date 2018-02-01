@@ -5,6 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.sun.org.apache.regexp.internal.RE;
 
 import ru.geekbrains.mygame.*;
 
@@ -13,16 +17,32 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     protected Game game;
     protected SpriteBatch batch;
+    private Rect screenBounds; //граница области рисования в пикселях
+    private Rect worldBounds;//граница мировых координат
+    private Rect glBounds;//дефолтные граници проекции мир gl
 
-    public Base2DScreen(Game game, SpriteBatch batch) {
+    protected Matrix4 worldToGl;
+    protected Matrix3 screenToWorld;
+
+    private final Vector2 touch =new Vector2();
+
+    public Base2DScreen(Game game){//} ,SpriteBatch batch) {
         this.game = game;
-        this.batch = batch;
+//        this.batch = batch;,
     }
 
     @Override
     public void show() {
-        System.out.println("show");
         Gdx.input.setInputProcessor(this);
+        this.screenBounds=new Rect();
+        this.worldBounds=new Rect();
+        this.glBounds=new Rect(0,0,1f,1f);
+        this.worldToGl=new Matrix4();
+        this.screenToWorld=new Matrix3();
+        if(batch!=null){throw new RuntimeException("где-то есть лишний батч");}
+        batch=new SpriteBatch();
+        System.out.println("show");
+
     }
 
     @Override
@@ -32,8 +52,21 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
+        screenBounds.setSize(width,height);
+        screenBounds.setLeft(0);
+        screenBounds.setBottom(0);
+
+        float aspect=width/(float)height;
+        worldBounds.setHeight(1f);
+        worldBounds.setWidth(1f*aspect);
+        MatrixUtils.calcTransitionMatrix(worldToGl,worldBounds,glBounds);
+        batch.setProjectionMatrix(worldToGl);
+        MatrixUtils.calcTransitionMatrix(screenToWorld,screenBounds,worldBounds);
         System.out.println("resize width=" + width + " height=" + height);
+        resize(worldBounds);
     }
+
+    protected void resize(Rect worldBounds){}
 
     @Override
     public void pause() {
@@ -52,8 +85,9 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-//        batch.dispose();
+        batch.dispose();
         game.dispose();
+        batch=null;
         System.out.println("dispose");
     }
 
@@ -77,21 +111,33 @@ public class Base2DScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown X=" + screenX + " Y=" + (Gdx.graphics.getHeight() - screenY) + " button=" + button);
+        touch.set(screenX,screenBounds.getHeight()-screenY).mul(screenToWorld);
+        System.out.println("touchDown X=" + touch.x + " Y=" + touch.y + " button=" + button);
+        touchDown(touch,pointer,button);
         return false;
     }
+
+    protected void touchDown(Vector2 touch, int pointer, int button) {}
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchUp X=" + screenX + " Y=" + screenY + " button=" + button);
+        touch.set(screenX,screenBounds.getHeight()-screenY).mul(screenToWorld);
+        System.out.println("touchUp X=" + touch.x + " Y=" + touch.y + " button=" + button);
+        touchUp(touch,pointer,button);
         return false;
     }
 
+    protected void touchUp(Vector2 touch, int pointer, int button) {}
+
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        System.out.println("touchDragged X=" + screenX + " Y=" + screenY);
+        touch.set(screenX,screenBounds.getHeight()-screenY).mul(screenToWorld);
+        System.out.println("touchDragged X=" + touch.x + " Y=" + touch.y);
+        touchDragged(touch,pointer);
         return false;
     }
+
+    protected void touchDragged(Vector2 touch, int pointer) {}
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {

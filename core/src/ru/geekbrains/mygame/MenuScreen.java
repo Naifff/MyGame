@@ -5,25 +5,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.mygame.engine.Base2DScreen;
 import ru.geekbrains.mygame.engine.Rect;
+import ru.geekbrains.mygame.engine.Sprite;
 
 public class MenuScreen extends Base2DScreen {
-    public MenuScreen(My2DGame game, SpriteBatch batch) {
-        super(game, batch);
+    public MenuScreen(My2DGame game){//}, SpriteBatch batch) {
+        super(game);
         this.game = game;
     }
 
     // private SpriteBatch batch;
     private My2DGame game;
-    private Texture background;
+    private Texture backgroundTexture;
     private Texture ship;
     //при изменении разрешения экрана и текстуры корабля, пересчитать!!!
-    private int xMid = 595;
-    private int yMid = 310;
+    private int xMid = 135;
+    private int yMid = 270;
     //при изменении разрешения экрана и текстуры корабля, пересчитать!!!
     private int x = xMid;
     private int y = yMid;
@@ -37,6 +39,9 @@ public class MenuScreen extends Base2DScreen {
     private int speed = 180;
     private Vector2 testMatrixVector;
     private Matrix3 matrix3;
+
+    private Sprite shipSprite;
+    private Background background;
 //    private float xDif;
 //    private  float yDif;
 
@@ -44,29 +49,36 @@ public class MenuScreen extends Base2DScreen {
     @Override
     public void show() {
         super.show();
-        Gdx.graphics.setResizable(false);
+//        Gdx.graphics.setResizable(false);
         Gdx.graphics.setTitle("Go Go Go");
         //  batch = new SpriteBatch();
-        background = new Texture("1.png");
+        backgroundTexture = new Texture("1.png");
         //ship = new Texture("2.png");
         shipVector = new Vector2(x, y);
         testMatrixVector=new Vector2(2,3);
         matrix3=new Matrix3();
         matrix3.idt();
         testMatrixVector.mul(matrix3);
+        ship = new Texture("sh5.png");
+        shipSprite=new Sprite(new TextureRegion(ship));
+        shipSprite.setSize(1f,1f);
+        background=new Background(new TextureRegion(backgroundTexture));
     }
 
     @Override
     public void render(float dt) {
         super.render(dt);
-        update(dt);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        update(dt);
+        Gdx.gl.glClearColor(0.7f, 0.3f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(background, 0, 0);
+        background.draw(batch);
+//        batch.draw(background, 0, 0);
 //		batch.setColor(0.11f,0.154f,0.241f,1);
-        batch.draw(ship, shipVector.x, shipVector.y);
+//        batch.draw(ship, shipVector.x, shipVector.y);
+//        batch.draw(ship,0, 0, 1f,1f);
 //		batch.draw(region, 100, 100);
+//        shipSprite.draw(batch);
         batch.end();
     }
 
@@ -133,72 +145,93 @@ public class MenuScreen extends Base2DScreen {
     public void dispose() {
 
 //        batch.dispose();
-        background.dispose();
+        backgroundTexture.dispose();
         ship.dispose();
 //        super.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        x = screenX - ship.getWidth() / 2;
-        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
-        mouse = new Vector2(x, y);
-        if (button == 0) {
-            speed = 240;
-        } else {
-            speed = 480;
-        }
-        return super.touchDown(screenX, screenY, pointer, button);
+    protected void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
     }
 
     @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        x = screenX - ship.getWidth() / 2;
-        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
-        mouse = new Vector2(xMid, yMid);
-        speed = 180;
-        return super.touchUp(screenX, screenY, pointer, button);
+    protected void touchDown(Vector2 touch, int pointer, int button) {
+        super.touchDown(touch, pointer, button);
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        x = screenX - ship.getWidth() / 2;
-        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
-        mouse = new Vector2(x, y);
-        return super.touchDragged(screenX, screenY, pointer);
+    protected void touchUp(Vector2 touch, int pointer, int button) {
+        super.touchUp(touch, pointer, button);
     }
 
     @Override
-    public void resize(int width, int height) {
-        this.game.getViewport().update(width, height, true);
-        this.game.getViewport().apply();
+    protected void touchDragged(Vector2 touch, int pointer) {
+        super.touchDragged(touch, pointer);
+    }
 
-//        System.out.println( Gdx.graphics.getBackBufferWidth());
-        ship = new Texture("sh5.png");
-//        xMid = width / 2 - ship.getWidth() / 2;
-//        x = xMid;
+    //    @Override
+//    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+//        x = screenX - ship.getWidth() / 2;
+//        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+//        mouse = new Vector2(x, y);
+//        if (button == 0) {
+//            speed = 240;
+//        } else {
+//            speed = 480;
+//        }
+//        return super.touchDown(screenX, screenY, pointer, button);
+//    }
 
-//        yMid = height / 2 - ship.getHeight() / 2;
-//        y = yMid;
-        centr = new Vector2(x, y);
-//        shipVector = new Vector2(x, y);
-        mouse = new Vector2(xMid, yMid);
-
-//        xDif=width/1280;
-//        yDif=height/720;
-
+//    @Override
+//    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 //        x = screenX - ship.getWidth() / 2;
 //        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
 //        mouse = new Vector2(xMid, yMid);
 //        speed = 180;
+//        return super.touchUp(screenX, screenY, pointer, button);
+//    }
 
-//        System.out.println(xMid+"_+_"+yMid);
+//    @Override
+//    public boolean touchDragged(int screenX, int screenY, int pointer) {
+//        x = screenX - ship.getWidth() / 2;
+//        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+//        mouse = new Vector2(x, y);
+//        return super.touchDragged(screenX, screenY, pointer);
+//    }
 
-//        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
-//        System.out.println(width+"_windiw_"+height);
-//        System.out.println(xMid+"_center_"+yMid);
-        super.resize(width, height);
-    }
+//    @Override
+//    public void resize(int width, int height) {
+////        this.game.getViewport().update(width, height, true);
+////        this.game.getViewport().apply();
+//
+////        System.out.println( Gdx.graphics.getBackBufferWidth());
+//        ship = new Texture("sh5.png");
+////        xMid = width / 2 - ship.getWidth() / 2;
+////        x = xMid;
+//
+////        yMid = height / 2 - ship.getHeight() / 2;
+////        y = yMid;
+//        centr = new Vector2(x, y);
+////        shipVector = new Vector2(x, y);
+//        mouse = new Vector2(xMid, yMid);
+//
+////        xDif=width/1280;
+////        yDif=height/720;
+//
+////        x = screenX - ship.getWidth() / 2;
+////        y = (Gdx.graphics.getHeight() - screenY) - ship.getHeight() / 2;
+////        mouse = new Vector2(xMid, yMid);
+////        speed = 180;
+//
+////        System.out.println(xMid+"_+_"+yMid);
+//
+////        System.out.println(ship.getWidth()+"_ship_"+ship.getHeight());
+////        System.out.println(width+"_windiw_"+height);
+////        System.out.println(xMid+"_center_"+yMid);
+//        super.resize(width, height);
+//    }
 }
 
 /*
