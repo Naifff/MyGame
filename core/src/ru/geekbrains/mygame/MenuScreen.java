@@ -42,6 +42,8 @@ public class MenuScreen extends Base2DScreen {
 
     private Sprite shipSprite;
     private Background background;
+    private Button startBTN;
+    private Button exitBTN;
 //    private float xDif;
 //    private  float yDif;
 
@@ -63,6 +65,8 @@ public class MenuScreen extends Base2DScreen {
         shipSprite=new Sprite(new TextureRegion(ship));
         shipSprite.setSize(1f,1f);
         background=new Background(new TextureRegion(backgroundTexture));
+        startBTN=new Button(new TextureRegion(new Texture("statr.png")));
+        exitBTN=new Button(new TextureRegion(new Texture("exit.png")));
     }
 
     @Override
@@ -73,6 +77,8 @@ public class MenuScreen extends Base2DScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        startBTN.draw(batch);
+        exitBTN.draw(batch);
 //        batch.draw(background, 0, 0);
 //		batch.setColor(0.11f,0.154f,0.241f,1);
 //        batch.draw(ship, shipVector.x, shipVector.y);
@@ -154,6 +160,12 @@ public class MenuScreen extends Base2DScreen {
     protected void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
+        startBTN.resize(worldBounds);
+        startBTN.setLeft(-worldBounds.getHalfWidth()/2-startBTN.getHalfWidth());
+        startBTN.setBottom(worldBounds.getBottom()+startBTN.getHalfWidth()*2);
+        exitBTN.resize(worldBounds);
+        exitBTN.setLeft(worldBounds.getHalfWidth()/2-exitBTN.getHalfWidth());
+        exitBTN.setBottom(startBTN.getBottom());
     }
 
     @Override
