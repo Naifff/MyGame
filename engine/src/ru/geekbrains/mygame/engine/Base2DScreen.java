@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.org.apache.regexp.internal.RE;
 
-import ru.geekbrains.mygame.*;
+import ru.geekbrains.mygame.engine.math.MatrixUtils;
+import ru.geekbrains.mygame.engine.math.Rect;
 
 
 public class Base2DScreen implements Screen, InputProcessor {

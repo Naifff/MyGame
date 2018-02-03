@@ -1,25 +1,46 @@
-package ru.geekbrains.mygame;
+package ru.geekbrains.mygame.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.geekbrains.mygame.Background;
+import ru.geekbrains.mygame.Button;
+import ru.geekbrains.mygame.My2DGame;
+import ru.geekbrains.mygame.engine.ActionListener;
 import ru.geekbrains.mygame.engine.Base2DScreen;
-import ru.geekbrains.mygame.engine.Rect;
+import ru.geekbrains.mygame.engine.math.Rect;
 import ru.geekbrains.mygame.engine.Sprite;
+import ru.geekbrains.mygame.engine.math.Rnd;
+import ru.geekbrains.mygame.star.Star;
+import ru.geekbrains.mygame.ui.ButtonExit;
+import ru.geekbrains.mygame.ui.ButtonPlay;
 
-public class MenuScreen extends Base2DScreen {
-    public MenuScreen(My2DGame game){//}, SpriteBatch batch) {
+public class MenuScreen extends Base2DScreen implements ActionListener {
+    public MenuScreen(My2DGame game) {//}, SpriteBatch batch) {
         super(game);
         this.game = game;
     }
 
     // private SpriteBatch batch;
+
+    private static final float BUTTON_HEIGHT = 0.10f;
+    private static final float BUTTON_PRESS_SCALE = 0.9f;
+
+    private TextureAtlas atlas;
+
+    private ButtonExit buttonExit;
+    private ButtonPlay buttonPlay;
+
+//    private Star star;
+
+    private Star[] slowStars=new Star[1000];
+    private Star[] fastStars=new Star[100];
+
     private My2DGame game;
     private Texture backgroundTexture;
     private Texture ship;
@@ -29,7 +50,7 @@ public class MenuScreen extends Base2DScreen {
     //при изменении разрешения экрана и текстуры корабля, пересчитать!!!
     private int x = xMid;
     private int y = yMid;
-    private int i = 0;
+//    private int i = 0;
     private int move = 5;
     private Vector2 centr;
     private Vector2 mouse;
@@ -42,8 +63,10 @@ public class MenuScreen extends Base2DScreen {
 
     private Sprite shipSprite;
     private Background background;
-    private Button startBTN;
-    private Button exitBTN;
+//    private Button startBTN;
+//    private Button exitBTN;
+
+
 //    private float xDif;
 //    private  float yDif;
 
@@ -57,68 +80,76 @@ public class MenuScreen extends Base2DScreen {
         backgroundTexture = new Texture("1.png");
         //ship = new Texture("2.png");
         shipVector = new Vector2(x, y);
-        testMatrixVector=new Vector2(2,3);
-        matrix3=new Matrix3();
+        testMatrixVector = new Vector2(2, 3);
+        matrix3 = new Matrix3();
         matrix3.idt();
         testMatrixVector.mul(matrix3);
         ship = new Texture("sh5.png");
-        shipSprite=new Sprite(new TextureRegion(ship));
-        shipSprite.setSize(1f,1f);
-        background=new Background(new TextureRegion(backgroundTexture));
-        startBTN=new Button(new TextureRegion(new Texture("statr.png")));
-        exitBTN=new Button(new TextureRegion(new Texture("exit.png")));
+        shipSprite = new Sprite(new TextureRegion(ship));
+        shipSprite.setSize(1f, 1f);
+        atlas = new TextureAtlas("menuAtlas.tpack");
+        background = new Background(new TextureRegion(backgroundTexture));
+//        startBTN = new Button(new TextureRegion(new Texture("statr.png")));
+//        exitBTN = new Button(new TextureRegion(new Texture("exit.png")));
+        buttonPlay = new ButtonPlay(new TextureRegion(new TextureRegion(new Texture("statr.png"))), BUTTON_PRESS_SCALE, this);
+                buttonPlay.setHeightProportion(BUTTON_HEIGHT);
+        buttonExit = new ButtonExit(new TextureRegion(new Texture("exit.png")), BUTTON_PRESS_SCALE, this);
+        buttonExit.setHeightProportion(BUTTON_HEIGHT);
+//        star = new Star(atlas, Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f), 0.01f);
+
+//        for(Star star:slowStars){
+//            star=new Star(atlas, Rnd.nextFloat(-0.00005f, 0.00005f), Rnd.nextFloat(-0.0005f, -0.0001f), Rnd.nextFloat(0.001f,0.0001f));
+//        }
+//        for(Star star:fastStars){star= new Star(atlas, Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f), 0.01f);}
+        for (int i = 0; i < slowStars.length; i++) {
+            slowStars[i]=new Star(atlas, Rnd.nextFloat(-0.00005f, 0.00005f), Rnd.nextFloat(-0.0005f, -0.0001f), Rnd.nextFloat(0.01f,0.001f));
+        }
+        for (int i = 0; i <fastStars.length ; i++) {
+            fastStars[i]=new Star(atlas, Rnd.nextFloat(-0.001f, 0.001f), Rnd.nextFloat(-0.7f, -0.1f), 0.01f);
+        }
+
     }
 
     @Override
     public void render(float dt) {
         super.render(dt);
-//        update(dt);
+
+        update(dt);
+      draw();
+
+    }
+
+    public void draw(){
         Gdx.gl.glClearColor(0.7f, 0.3f, 0.7f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        startBTN.draw(batch);
-        exitBTN.draw(batch);
-//        batch.draw(background, 0, 0);
-//		batch.setColor(0.11f,0.154f,0.241f,1);
-//        batch.draw(ship, shipVector.x, shipVector.y);
-//        batch.draw(ship,0, 0, 1f,1f);
-//		batch.draw(region, 100, 100);
-//        shipSprite.draw(batch);
+
+        for (int i = 0; i <slowStars.length ; i++) {
+            slowStars[i].draw(batch);
+        }
+        for (int i = 0; i <fastStars.length ; i++) {
+            fastStars[i].draw(batch);
+        }
+//        for(Star star:slowStars){star.draw(batch);}
+//        for(Star star:fastStars){star.draw(batch);}
+
+        buttonPlay.draw(batch);
+        buttonExit.draw(batch);
         batch.end();
     }
 
     public void update(float dt) {
-        if (Math.abs(mouse.x - shipVector.x) < 3 && Math.abs(mouse.y - shipVector.y) < 3) {
-            shipVector = new Vector2(mouse.x, mouse.y);
+
+        for (int i = 0; i <slowStars.length ; i++) {
+            slowStars[i].update(dt);
         }
-        res = (mouse.cpy().sub(shipVector)).nor().scl(speed * dt);
-        shipVector = shipVector.cpy().add(res);
-        if (i % 10 == 0) {
-            if (res.x * levo.x + res.y * levo.y > 0) {
-                move--;
-                if (move < 1) {
-                    move = 1;
-                }
-            } else if (res.x * levo.x + res.y * levo.y < 0) {
-                move++;
-                if (move > 9) {
-                    move = 9;
-                }
-            } else {
-                if (move > 5) {
-                    move--;
-                }
-                if (move < 5) {
-                    move++;
-                }
-            }
-            ship = moveShip(move);
+        for (int i = 0; i < fastStars.length; i++) {
+            fastStars[i].update(dt);
         }
-        i++;
-        if (i > 10000) {
-            i = i % 10;
-        }
+
+//        for(Star star:slowStars){star.update(dt);}
+//        for(Star star:fastStars){star.update(dt);}
 
     }
 
@@ -160,27 +191,56 @@ public class MenuScreen extends Base2DScreen {
     protected void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
-        startBTN.resize(worldBounds);
-        startBTN.setLeft(-worldBounds.getHalfWidth()/2-startBTN.getHalfWidth());
-        startBTN.setBottom(worldBounds.getBottom()+startBTN.getHalfWidth()*2);
-        exitBTN.resize(worldBounds);
-        exitBTN.setLeft(worldBounds.getHalfWidth()/2-exitBTN.getHalfWidth());
-        exitBTN.setBottom(startBTN.getBottom());
+//        startBTN.resize(worldBounds);
+//        startBTN.setLeft(-worldBounds.getHalfWidth()/2-startBTN.getHalfWidth());
+//        startBTN.setBottom(worldBounds.getBottom()+startBTN.getHalfWidth()*2);
+//        exitBTN.resize(worldBounds);
+//        exitBTN.setLeft(worldBounds.getHalfWidth()/2-exitBTN.getHalfWidth());
+//        exitBTN.setBottom(startBTN.getBottom());
+        buttonExit.resize(worldBounds);
+        buttonPlay.resize(worldBounds);
+
+        for (int i = 0; i < slowStars.length; i++) {
+            slowStars[i].resize(worldBounds);
+        }
+        for (int i = 0; i < fastStars.length; i++) {
+            fastStars[i].resize(worldBounds);
+        }
+
+//        for(Star star:slowStars){star.resize(worldBounds);}
+//        for(Star star:fastStars){star.resize(worldBounds);}
+
     }
 
     @Override
     protected void touchDown(Vector2 touch, int pointer, int button) {
         super.touchDown(touch, pointer, button);
+        buttonExit.touchUp(touch, pointer);
+        buttonPlay.touchUp(touch, pointer);
     }
 
     @Override
     protected void touchUp(Vector2 touch, int pointer, int button) {
         super.touchUp(touch, pointer, button);
+        buttonExit.touchDown(touch, pointer);
+        buttonPlay.touchDown(touch, pointer);
     }
 
     @Override
     protected void touchDragged(Vector2 touch, int pointer) {
         super.touchDragged(touch, pointer);
+    }
+
+    @Override
+    public void actionPerformed(Object src) {
+        if (src == buttonExit) {
+            Gdx.app.exit();
+        } else if (src == buttonPlay) {
+            game.setScreen(new GameScreen(game));
+        } else {
+            throw new RuntimeException("Unknown src " + src);
+        }
+
     }
 
     //    @Override
