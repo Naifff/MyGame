@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.mygame.Background;
 import ru.geekbrains.mygame.My2DGame;
+import ru.geekbrains.mygame.Ships.Ship;
 import ru.geekbrains.mygame.engine.ActionListener;
 import ru.geekbrains.mygame.engine.Base2DScreen;
 import ru.geekbrains.mygame.engine.math.Rect;
@@ -30,6 +31,7 @@ public class GameScreen extends Base2DScreen implements ActionListener{
     private My2DGame game;
     private Texture backgroundTexture;
     private Background background;
+    private Ship myShip;
 
 
     @Override
@@ -45,6 +47,8 @@ public class GameScreen extends Base2DScreen implements ActionListener{
         for (int i = 0; i <fastStars.length ; i++) {
             fastStars[i]=new Star(atlas, Rnd.nextFloat(-0.001f, 0.001f), Rnd.nextFloat(-0.7f, -0.1f), 0.01f);
         }
+        myShip=new Ship(new TextureRegion(new Texture("sh5.png")), 0.8f,0f,0.1f);
+//myShip.setHeightProportion(0.1f);
 
     }
 
@@ -65,6 +69,7 @@ public class GameScreen extends Base2DScreen implements ActionListener{
         for (int i = 0; i <fastStars.length ; i++) {
             fastStars[i].draw(batch);
         }
+        myShip.draw(batch);
         batch.end();
     }
 
@@ -76,12 +81,14 @@ public class GameScreen extends Base2DScreen implements ActionListener{
         for (int i = 0; i < fastStars.length; i++) {
             fastStars[i].update(dt);
         }
+        myShip.update(dt);
     }
 
     @Override
     public void dispose() {
         super.dispose();
         backgroundTexture.dispose();
+
 
     }
 
@@ -120,21 +127,27 @@ public class GameScreen extends Base2DScreen implements ActionListener{
         for (int i = 0; i < fastStars.length; i++) {
             fastStars[i].resize(worldBounds);
         }
+        myShip.resize(worldBounds);
+        myShip.setLeft(worldBounds.getLeft());
+        myShip.setBottom(worldBounds.getBottom());
     }
 
     @Override
     protected void touchDown(Vector2 touch, int pointer, int button) {
         super.touchDown(touch, pointer, button);
+        myShip.touchDown(touch,pointer);
 
     }
 
     @Override
     protected void touchUp(Vector2 touch, int pointer, int button) {
         super.touchUp(touch, pointer, button);
+        myShip.touchUp(touch,pointer);
     }
 
     @Override
     protected void touchDragged(Vector2 touch, int pointer) {
+        myShip.touchDragged(touch,pointer);
         super.touchDragged(touch, pointer);
     }
 
